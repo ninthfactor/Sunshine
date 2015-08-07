@@ -1,7 +1,10 @@
 package com.ninthfactor.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +40,41 @@ public class MainActivity extends ActionBarActivity {
 
 //            return true;
         }
+
+        // If clicked on Show on Map menu item.
+
+        if (id == R.id.map_location) {
+
+            // get the location from shared preference
+
+            SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            String location = sharedPrefs.getString(
+                    getString(R.string.pref_location_key),
+                    getString(R.string.pref_location_default));
+
+
+            double latitude = 0;
+            double longitude = 0;
+            String uriBegin = "geo:" + latitude + "," + longitude;
+            // String query = "cochin";
+            String encodedQuery = Uri.encode(location);
+            String uriString = uriBegin + "?q=" + encodedQuery;
+            Uri uri = Uri.parse(uriString);
+
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+            }
+
+
+//            return true;
+        }
+
+
+
 
         return super.onOptionsItemSelected(item);
     }
