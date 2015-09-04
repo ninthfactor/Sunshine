@@ -1,21 +1,70 @@
 package com.ninthfactor.sunshine;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private String mLocation;
+    private final String FORECASTFRAGMENT_TAG = "FFTAG";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mLocation = Utility.getPreferredLocation(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.v("Life-Cycle","onCreate");
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction().add(R.id.fragment, new ForecastFragment(),
+//                                    FORECASTFRAGMENT_TAG)
+//                    .commit();
+//        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v("Life-Cycle","onPause");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v("Life-Cycle","onStop");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v("Life-Cycle", "onResume");
+        String location = Utility.getPreferredLocation( this );
+        // update the location in our second pane using the fragment manager
+        if (location != null && !location.equals(mLocation)) {
+        //    ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment);
+            if ( null != ff ) {
+                ff.onLocationChanged();
+            }
+            mLocation = location;
+        }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v("Life-Cycle","onStart");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v("Life-Cycle","onDestroy");
     }
 
 
@@ -47,11 +96,14 @@ public class MainActivity extends ActionBarActivity {
 
             // get the location from shared preference
 
-            SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            String location = sharedPrefs.getString(
-                    getString(R.string.pref_location_key),
-                    getString(R.string.pref_location_default));
+//            SharedPreferences sharedPrefs =
+//                    PreferenceManager.getDefaultSharedPreferences(this);
+//            String location = sharedPrefs.getString(
+//                    getString(R.string.pref_location_key),
+//                    getString(R.string.pref_location_default));
+
+            String location = Utility.getPreferredLocation(this);
+
 
 
             double latitude = 0;
